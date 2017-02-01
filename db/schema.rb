@@ -11,7 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170201054929) do
+ActiveRecord::Schema.define(version: 20170201063414) do
+
+  create_table "children", force: :cascade do |t|
+    t.integer  "parent_id",  default: 0,     null: false
+    t.string   "name",       default: "",    null: false
+    t.boolean  "frozen?",    default: false, null: false
+    t.integer  "balance",    default: 0,     null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "children", ["parent_id"], name: "index_children_on_parent_id"
+
+  create_table "chores", force: :cascade do |t|
+    t.integer  "child_id"
+    t.boolean  "repeat?",     default: false, null: false
+    t.integer  "coins",       default: 0,     null: false
+    t.string   "name",        default: "",    null: false
+    t.text     "description"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "chores", ["child_id"], name: "index_chores_on_child_id"
 
   create_table "parents", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -30,5 +53,25 @@ ActiveRecord::Schema.define(version: 20170201054929) do
 
   add_index "parents", ["email"], name: "index_parents_on_email", unique: true
   add_index "parents", ["reset_password_token"], name: "index_parents_on_reset_password_token", unique: true
+
+  create_table "repeat_infos", force: :cascade do |t|
+    t.integer  "repeat_type"
+    t.integer  "repeat_data"
+    t.integer  "chore_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "repeat_infos", ["chore_id"], name: "index_repeat_infos_on_chore_id"
+
+  create_table "rewards", force: :cascade do |t|
+    t.integer  "cost",          default: 0,     null: false
+    t.boolean  "auto_approve?", default: false, null: false
+    t.integer  "parent_id",                     null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "rewards", ["parent_id"], name: "index_rewards_on_parent_id"
 
 end
